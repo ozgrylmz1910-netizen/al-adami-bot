@@ -3,7 +3,7 @@ import google.generativeai as genai
 import os
 import time
 
-# Render Environment Variables (Buraya dokunma, Render panelinden alacak)
+# Render Environment Variables
 api_key = os.getenv("TWITTER_API_KEY")
 api_secret = os.getenv("TWITTER_API_SECRET")
 access_token = os.getenv("TWITTER_ACCESS_TOKEN")
@@ -11,9 +11,13 @@ access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 bearer_token = os.getenv("TWITTER_BEARER_TOKEN")
 gemini_key = os.getenv("GEMINI_API_KEY")
 
-# Gemini Setup - Yeni model ismini buraya ekledim
-genai.configure(api_key=gemini_key)
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Gemini Setup - En garanti model ismi
+try:
+    genai.configure(api_key=gemini_key)
+    # Burada model ismini 'latest' takısıyla güncelledim
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+except Exception as e:
+    print(f"Gemini ayarlanirken hata: {e}")
 
 # Twitter Setup
 client = tweepy.Client(
@@ -28,6 +32,7 @@ def tweet_at():
     print("--- Islem Basliyor ---")
     try:
         print("Gemini metin uretiyor...")
+        # Alternatif olarak direkt model ismini veriyoruz
         response = model.generate_content("X (Twitter) için çok kısa, etkileyici ve bilgece bir tweet yaz. Sadece metni ver.")
         tweet_text = response.text.strip().replace('"', '')
         print(f"Uretilen Metin: {tweet_text}")
@@ -40,6 +45,5 @@ def tweet_at():
 
 if __name__ == "__main__":
     tweet_at()
-    # Logları okuyabilmen için 30 saniye bekler
-    print("Loglar kontrol ediliyor, 30 saniye sonra sistem kapanacak...")
+    print("Loglari okumaniz icin 30 saniye bekleniyor...")
     time.sleep(30)
