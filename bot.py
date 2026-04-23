@@ -12,26 +12,29 @@ def run_server():
         def do_GET(self):
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(b"Bot Sorunsuz Calisiyor!")
+            self.wfile.write(b"Maore Bot Sorunsuz Calisiyor!")
+    
     port = int(os.environ.get("PORT", 8080))
     httpd = HTTPServer(('0.0.0.0', port), Handler)
     httpd.serve_forever()
 
-# 2. TWEET HAVUZU (Buraya istediğin cümleleri ekle)
+# 2. TWEET HAVUZU (Gemini yerine buradan rastgele seçer)
 TWEET_LISTESI = [
     "Başarı, her gün tekrarlanan küçük disiplinlerin toplamıdır. 🚀",
     "Gelecek, bugünden hazırlananlara aittir. Durmak yok!",
     "Zorluklar, yetenekli insanları ortaya çıkarır. Devam et.",
     "Girişimcilik, kimsenin cesaret edemediği yerlerde fırsat görmektir.",
     "Hata yapmaktan korkmayın, sadece aynı hatayı iki kez yapmaktan korkun.",
-    "Sabır ve azim, başarının anahtarıdır. Çalışmaya devam!"
+    "Sabır ve azim, başarının anahtarıdır. Çalışmaya devam!",
+    "Maore ile fark yaratmaya devam ediyoruz. 🛠️",
+    "İşine odaklan, gerisi kendiliğinden gelecek."
 ]
 
 def start_bot():
-    print("\n--- [BAŞLADI] GEMINI'SIZ GARANTİ OPERASYON ---")
+    print("\n--- [BAŞLADI] TWEET OPERASYONU ---")
     
     try:
-        # Twitter Bağlantısı (Render panelindeki isimlerinle tam uyumlu)
+        # Twitter Bağlantısı
         client = tweepy.Client(
             consumer_key=os.getenv("X_API_KEY"),
             consumer_secret=os.getenv("X_API_SECRET"),
@@ -47,17 +50,17 @@ def start_bot():
         print("--- [TAMAM] TWEET HESABA DÜŞTÜ! ---")
         
     except Exception as e:
-        print(f"!!! TWITTER HATASI !!!: {str(e)}")
-        # Eğer hata verirse sadece Twitter API anahtarlarında sorun olabilir
+        print(f"!!! KRİTİK HATA !!!: {str(e)}")
+        # Eğer hata buraya düşerse Twitter API Key'lerini kontrol etmelisin.
 
 if __name__ == "__main__":
-    # Render için sunucuyu arka planda başlat
+    # Render'ı canlı tutacak sunucuyu başlat
     threading.Thread(target=run_server, daemon=True).start()
     
     # İlk tweeti hemen at
     start_bot()
     
-    # 4 saatte bir yeni tweet atması için bekleme
+    # 4 saatte bir yeni tweet atması için döngü
     while True:
-        time.sleep(14400) # 4 Saat (Saniye cinsinden)
+        time.sleep(14400) # 4 Saat bekle
         start_bot()
